@@ -13,7 +13,9 @@ export class TasksService {
   constructor(
     @InjectRepository(TaskRepository)
     private taskRepository: TaskRepository,
-  ) {}
+  ) {
+  }
+
   //private to prevent changes from being made to the array by any other component that import the service
   // private tasks: Task[] = [];
   //
@@ -30,27 +32,12 @@ export class TasksService {
 
     return found;
   }
-  //
-  // getTasksWithFilter(filterDto: GetTasksFilterDto): Task[] {
-  //
-  //   const {status, search} = filterDto;
-  //
-  //   let tasks = this.getAllTasks();
-  //
-  //   if (status) {
-  //     tasks = tasks.filter((task) => task.status === status);
-  //   }
-  //
-  //   if (search) {
-  //     tasks = tasks.filter(
-  //       (task) =>
-  //         task.title.includes(search) || task.description.includes(search),
-  //     );
-  //   }
-  //
-  //   return tasks;
-  // }
-  //
+
+
+  async getTasks(filterDto: GetTasksFilterDto): Promise<Task[]>{
+
+    return this.taskRepository.getTasks(filterDto);
+}
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     return this.taskRepository.createTask(createTaskDto);
   }
