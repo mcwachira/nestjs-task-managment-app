@@ -5,13 +5,11 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import * as bcrypt from 'bcrypt'
 
 @Injectable()
-export class UserRepository extends Repository<User>{
+export class UserRepository extends Repository<User> {
   constructor(private dataSource: DataSource) {
     super(User, dataSource.createEntityManager());
   }
-
-
-  async signUp(authCredentialsDto: AuthCredentialsDto) : Promise<void>{
+  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
 
 const {username, password} = authCredentialsDto;
 
@@ -23,7 +21,7 @@ const {username, password} = authCredentialsDto;
     user.password = await this.hashPassword(password, salt);
     user.salt = salt;
 
-    try{
+    try {
       await user.save();
     } catch (error) {
       if (error.code ==='23505'){
@@ -32,9 +30,21 @@ const {username, password} = authCredentialsDto;
         throw new InternalServerErrorException();
       }
     }
-
-
     //return user
+  }
+
+
+  async validateUserPassword(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<string> {
+    const { username, password } = authCredentialsDto;
+     const user = await this.findOneBy({ username });
+    // const user = await this.findOne(id);
+    if (user && (await user.validatePassword(password))) {
+      return user.username;
+    } else {
+      return null;
+    }
   }
 
 
