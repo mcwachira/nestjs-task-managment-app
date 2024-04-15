@@ -4,12 +4,15 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, Unique } from 'type
 @Entity()
 @Unique(['username'])
 export class User extends BaseEntity{
-@PrimaryGeneratedColumn()
+ @PrimaryGeneratedColumn()
   id: number;
 
-@Column()
+ @Column()
   username: string;
   @Column()
   password: string;
+
+  @Column()
+  salt: string;
 
 }
