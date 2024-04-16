@@ -54,7 +54,7 @@ export class TaskRepository extends Repository<Task> {
     return task;
 
   }
-  async getById(id: number, @GetUser() user: User): Promise<Task> {
+  async getTaskById(id: number, @GetUser() user: User): Promise<Task> {
     const found = await this.findOneBy({ id, userId: user.id });
 
     if (!found) {
@@ -78,10 +78,10 @@ export class TaskRepository extends Repository<Task> {
 
 
 
-  // async updateTask(id: number, status: TaskStatus): Promise<Task> {
-  //   const task = await this.getById(id);
-  //   task.status = status;
-  //   await task.save();
-  //   return task;
-  // }
+  async updateTask(id: number, status: TaskStatus, @GetUser() user: User): Promise<Task> {
+    const task = await this.getTaskById(id, user);
+    task.status = status;
+    await task.save();
+    return task;
+  }
 }

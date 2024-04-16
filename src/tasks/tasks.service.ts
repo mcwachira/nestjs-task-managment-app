@@ -15,8 +15,7 @@ export class TasksService {
   constructor(
     @InjectRepository(TaskRepository)
     private taskRepository: TaskRepository,
-  ) {
-  }
+  ) {}
 
   //private to prevent changes from being made to the array by any other component that import the service
   // private tasks: Task[] = [];
@@ -28,7 +27,7 @@ export class TasksService {
   async getTaskById(
     id: number,
     @GetUser() user: User): Promise<Task> {
-    const found = await this.taskRepository.getById(id, user);
+    const found = await this.taskRepository.getTaskById(id, user);
 
     if (!found) {
       throw new NotFoundException(`Task  with ${id} not found `);
@@ -54,7 +53,11 @@ export class TasksService {
   //   return this.taskRepository.deleteTask(id);
   // }
   //
-  // updateTaskStatus(id: number, status: TaskStatus): Promise<Task> {
-  //   return this.taskRepository.updateTask(id, status);
-  // }
+  updateTaskStatus(
+    id: number,
+    status: TaskStatus,
+    @GetUser() user: User,
+  ): Promise<Task> {
+    return this.taskRepository.updateTask(id, status, user);
+  }
 }
