@@ -1,10 +1,11 @@
 import { DataSource, Repository } from 'typeorm';
 import { Task } from './task.entity';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskStatus } from './task.status.enum';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { User } from '../auth/user.entity';
+import { GetUser } from '../auth/get-user-decorator';
 
 @Injectable()
 export class TaskRepository extends Repository<Task> {
@@ -12,10 +13,15 @@ export class TaskRepository extends Repository<Task> {
     super(Task, dataSource.createEntityManager());
   }
 
-  async getTasks(filterDto: GetTasksFilterDto): Promise<Task[]>{
+  async getTasks(
+    filterDto: GetTasksFilterDto,
+    @GetUser() user: User): Promise<Task[]>{
     const { status, search } = filterDto;
 
     const query = this.createQueryBuilder('task');
+
+
+    query.where('task.userId = :userId' , {userId:user.id})
 
     //andWhere prevents overriding
     if (status) {
@@ -30,6 +36,7 @@ export class TaskRepository extends Repository<Task> {
     }
 
     const tasks = await query.getMany();
+
     return tasks;
   }
 
