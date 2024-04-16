@@ -54,8 +54,8 @@ export class TaskRepository extends Repository<Task> {
     return task;
 
   }
-  async getById(id: number): Promise<Task> {
-    const found = await this.findOneBy({ id });
+  async getById(id: number, @GetUser() user: User): Promise<Task> {
+    const found = await this.findOneBy({ id, userId: user.id });
 
     if (!found) {
       throw new NotFoundException(`Task with ID "${id}" not found`);
@@ -64,24 +64,24 @@ export class TaskRepository extends Repository<Task> {
     return found;
   }
 
-  async deleteTask(id: number): Promise<Task> {
-    const found = await this.getById(id);
+  // async deleteTask(id: number): Promise<Task> {
+  //   const found = await this.getById(id);
+  //
+  //   if (!found) {
+  //     throw new NotFoundException(`Task with ID "${id}" not found`);
+  //   }
+  //
+  //   const task = await this.remove(found);
+  //
+  //   return task;
+  // }
 
-    if (!found) {
-      throw new NotFoundException(`Task with ID "${id}" not found`);
-    }
-
-    const task = await this.remove(found);
-
-    return task;
-  }
 
 
-
-  async updateTask(id: number, status: TaskStatus): Promise<Task> {
-    const task = await this.getById(id);
-    task.status = status;
-    await task.save();
-    return task;
-  }
+  // async updateTask(id: number, status: TaskStatus): Promise<Task> {
+  //   const task = await this.getById(id);
+  //   task.status = status;
+  //   await task.save();
+  //   return task;
+  // }
 }
