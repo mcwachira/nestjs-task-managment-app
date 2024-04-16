@@ -64,17 +64,19 @@ export class TaskRepository extends Repository<Task> {
     return found;
   }
 
-  // async deleteTask(id: number): Promise<Task> {
-  //   const found = await this.getById(id);
-  //
-  //   if (!found) {
-  //     throw new NotFoundException(`Task with ID "${id}" not found`);
-  //   }
-  //
-  //   const task = await this.remove(found);
-  //
-  //   return task;
-  // }
+  async deleteTask(
+    id: number,
+    @GetUser() user: User,): Promise<void> {
+    const found = await this.getTaskById(id, user);
+
+    if (!found) {
+      throw new NotFoundException(`Task with ID "${id}" not found`);
+    }
+
+    await this.remove(found);
+
+
+  }
 
 
 
