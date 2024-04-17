@@ -51,8 +51,8 @@ export class TasksService {
 
   async deleteTask(
     id: number,
-    @GetUser() user: User): Promise<Task> {
-    return this.taskRepository.deleteTask(id, user);
+    @GetUser() user: User): Promise<void> {
+    await this.taskRepository.deleteTask(id, user);
   }
 
   updateTaskStatus(
